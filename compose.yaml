@@ -1,0 +1,35 @@
+version: '3.9'
+services:
+  blog-database:
+    image: mongo
+    ports:
+      - '27017:27017'
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017 --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  blog-backend:
+    build: backend/
+    environment:
+      PORT: 3001
+      DATABASE_URL: mongodb://blog-database:27017/blog
+    ports:
+      - '3001:3001'
+    depends_on:
+      blog-database:
+        condition: service_healthy
+  blog-frontend:
+    build:
+      context: .
+      args:
+        VITE_BACKEND_URL: http://localhost:3001/api/v1
+    ports:
+      - '3000:80'
+    depends_on:
+      - blog-backend
+# elderalves
+# nandab
+
+# mongodb://elderalves:nandab@cluster0.phtcf.mongodb.net/?ssl=true&replicaSet=atlas-hwtesw-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0
+# mongodb+srv://elderalves:nandab@cluster0.phtcf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
