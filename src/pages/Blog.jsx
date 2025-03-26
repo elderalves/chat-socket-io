@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { CreatePost } from './components/CreatePost'
-import { PostFilter } from './components/PostFilter'
-import { PostSorting } from './components/PostSorting'
-import { PostList } from './components/PostList'
-import { getPosts } from './api/posts'
+import { CreatePost } from '../components/CreatePost'
+import { PostFilter } from '../components/PostFilter'
+import { PostSorting } from '../components/PostSorting'
+import { PostList } from '../components/PostList'
+import { getPosts } from '../api/posts'
+import { Header } from '../components/Header'
 
 export function Blog() {
   const [author, setAuthor] = useState('')
@@ -20,6 +21,7 @@ export function Blog() {
 
   return (
     <div className='max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl'>
+      <Header />
       <h1 className='text-2xl font-bold text-gray-800 mb-4'>Blog</h1>
 
       <CreatePost />

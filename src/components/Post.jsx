@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { User } from './User'
 
 export function Post({ title, contents, author }) {
   return (
@@ -7,7 +8,7 @@ export function Post({ title, contents, author }) {
       <div className='mt-2 text-gray-700'>{contents}</div>
       {author && (
         <p className='mt-3 text-gray-600'>
-          <strong>Written by:</strong> {author}
+          <strong>Written by:</strong> <User id={author} />
         </p>
       )}
     </article>

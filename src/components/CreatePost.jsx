@@ -4,11 +4,13 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DevTool } from '@hookform/devtools'
 import { createPost } from '../api/posts'
+import { useAuth } from '../contexts/AuthContext'
 
 export function CreatePost() {
+  const [token] = useAuth()
+
   const schema = z.object({
     createTitle: z.string().nonempty(),
-    createAuthor: z.string().nonempty(),
     contents: z.string().nonempty(),
   })
 
@@ -28,15 +30,25 @@ export function CreatePost() {
     name: 'createTitle',
   })
 
-  const { createAuthor, contents } = getValues()
+  const { contents } = getValues()
 
   const createPostMutation = useMutation({
-    mutationFn: () => createPost({ title, author: createAuthor, contents }),
+    mutationFn: () => createPost(token, { title, contents }),
     onSuccess: () => queryClient.invalidateQueries(['posts']),
   })
 
   const onSubmit = () => {
     createPostMutation.mutate()
+  }
+
+  if (!token) {
+    return (
+      <div className='max-w-lg mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl'>
+        <h2 className='text-xl font-semibold text-gray-700 mb-4'>
+          Please log in to create a post
+        </h2>
+      </div>
+    )
   }
 
   return (
@@ -59,23 +71,6 @@ export function CreatePost() {
           />
           {errors.createTitle && (
             <p className='text-red-500 text-sm mt-1'>Title is required.</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor='createAuthor'
-            className='block text-gray-600 font-medium'
-          >
-            Author:
-          </label>
-          <input
-            type='text'
-            {...register('createAuthor', { required: true })}
-            className='w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none'
-          />
-          {errors.createAuthor && (
-            <p className='text-red-500 text-sm mt-1'>Author is required.</p>
           )}
         </div>
 
